@@ -1,8 +1,8 @@
 package ru.javaops.masterjava.matrix;
 
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
 /**
  * gkislin
@@ -15,7 +15,7 @@ public class MatrixUtil {
         final int matrixSize = matrixA.length;
         final int[][] matrixC = new int[matrixSize][matrixSize];
 
-        return matrixC;
+        return getMultiplyMatrixVarA(matrixA, matrixB, matrixC, matrixSize, executor);
     }
 
     // TODO optimize by https://habrahabr.ru/post/114797/
@@ -24,14 +24,9 @@ public class MatrixUtil {
         final int[][] matrixC = new int[matrixSize][matrixSize];
 
         for (int i = 0; i < matrixSize; i++) {
-            for (int j = 0; j < matrixSize; j++) {
-                int sum = 0;
-                for (int k = 0; k < matrixSize; k++) {
-                    sum += matrixA[i][k] * matrixB[k][j];
-                }
-                matrixC[i][j] = sum;
-            }
+            calcRows(i, matrixA, matrixB, matrixC);
         }
+
         return matrixC;
     }
 
@@ -57,5 +52,41 @@ public class MatrixUtil {
             }
         }
         return true;
+    }
+
+    private static int[][] getMultiplyMatrixVarA(int[][] matrixA, int[][] matrixB, int[][] matrixC,
+                                                 int matrixSize, ExecutorService executor) {
+        final CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
+        final ArrayList<Future<Void>> futures = new ArrayList<>();
+
+        for (int i = 0; i < matrixSize; i++) {
+            final int finalI = i;
+            futures.add(completionService.submit(() -> calcRows(finalI, matrixA, matrixB, matrixC), null));
+        }
+
+        while (!futures.isEmpty()) {
+            futures.remove(completionService.poll());
+        }
+        return matrixC;
+    }
+
+    private static void calcRows(int rowNum, int[][] matrixA, int[][] matrixB, int[][] matrixC) {
+
+        final int matrixSize = matrixA.length;
+        int[] bColumn = new int[matrixSize];
+
+        for (int j = 0; j < matrixSize; j++) {
+            bColumn[j] = matrixB[j][rowNum];
+        }
+
+        for (int j = 0; j < matrixSize; j++) {
+
+            int sum = 0;
+            int[] aRow = matrixA[j];
+            for (int k = 0; k < matrixSize; k++) {
+                sum += aRow[k] * bColumn[k];
+            }
+            matrixC[rowNum][j] = sum;
+        }
     }
 }
