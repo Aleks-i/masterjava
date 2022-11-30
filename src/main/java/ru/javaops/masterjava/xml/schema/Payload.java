@@ -1,20 +1,16 @@
 
 package ru.javaops.masterjava.xml.schema;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -42,13 +38,22 @@ import javax.xml.bind.annotation.XmlType;
  *             &lt;/complexContent>
  *           &lt;/complexType>
  *         &lt;/element>
+ *         &lt;element name="ProjectTypes">
+ *           &lt;complexType>
+ *             &lt;complexContent>
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                 &lt;sequence maxOccurs="unbounded">
+ *                   &lt;element ref="{http://javaops.ru}ProjectType"/>
+ *                 &lt;/sequence>
+ *               &lt;/restriction>
+ *             &lt;/complexContent>
+ *           &lt;/complexType>
+ *         &lt;/element>
  *       &lt;/all>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -61,14 +66,14 @@ public class Payload {
     protected Payload.Cities cities;
     @XmlElement(name = "Users", namespace = "http://javaops.ru", required = true)
     protected Payload.Users users;
+    @XmlElement(name = "ProjectTypes", namespace = "http://javaops.ru", required = true)
+    protected Payload.ProjectTypes projectTypes;
 
     /**
      * Gets the value of the cities property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Payload.Cities }
-     *     
+     *
+     * @return possible object is
+     * {@link Payload.Cities }
      */
     public Payload.Cities getCities() {
         return cities;
@@ -76,11 +81,9 @@ public class Payload {
 
     /**
      * Sets the value of the cities property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Payload.Cities }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Payload.Cities }
      */
     public void setCities(Payload.Cities value) {
         this.cities = value;
@@ -88,11 +91,9 @@ public class Payload {
 
     /**
      * Gets the value of the users property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Payload.Users }
-     *     
+     *
+     * @return possible object is
+     * {@link Payload.Users }
      */
     public Payload.Users getUsers() {
         return users;
@@ -100,22 +101,40 @@ public class Payload {
 
     /**
      * Sets the value of the users property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Payload.Users }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Payload.Users }
      */
     public void setUsers(Payload.Users value) {
         this.users = value;
     }
 
+    /**
+     * Gets the value of the projectTypes property.
+     *
+     * @return possible object is
+     * {@link Payload.ProjectTypes }
+     */
+    public Payload.ProjectTypes getProjectTypes() {
+        return projectTypes;
+    }
+
+    /**
+     * Sets the value of the projectTypes property.
+     *
+     * @param value allowed object is
+     *              {@link Payload.ProjectTypes }
+     */
+    public void setProjectTypes(Payload.ProjectTypes value) {
+        this.projectTypes = value;
+    }
+
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -127,12 +146,10 @@ public class Payload {
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "city"
+            "city"
     })
     public static class Cities {
 
@@ -141,25 +158,23 @@ public class Payload {
 
         /**
          * Gets the value of the city property.
-         * 
+         *
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the city property.
-         * 
+         *
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getCity().add(newItem);
          * </pre>
-         * 
-         * 
+         *
+         *
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link CityType }
-         * 
-         * 
          */
         public List<CityType> getCity() {
             if (city == null) {
@@ -173,9 +188,65 @@ public class Payload {
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
+     * <pre>
+     * &lt;complexType>
+     *   &lt;complexContent>
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *       &lt;sequence maxOccurs="unbounded">
+     *         &lt;element ref="{http://javaops.ru}ProjectType"/>
+     *       &lt;/sequence>
+     *     &lt;/restriction>
+     *   &lt;/complexContent>
+     * &lt;/complexType>
+     * </pre>
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+            "projectType"
+    })
+    public static class ProjectTypes {
+
+        @XmlElement(name = "ProjectType", namespace = "http://javaops.ru", required = true)
+        protected List<ProjectType> projectType;
+
+        /**
+         * Gets the value of the projectType property.
+         *
+         * <p>
+         * This accessor method returns a reference to the live list,
+         * not a snapshot. Therefore any modification you make to the
+         * returned list will be present inside the JAXB object.
+         * This is why there is not a <CODE>set</CODE> method for the projectType property.
+         *
+         * <p>
+         * For example, to add a new item, do as follows:
+         * <pre>
+         *    getProjectType().add(newItem);
+         * </pre>
+         *
+         *
+         * <p>
+         * Objects of the following type(s) are allowed in the list
+         * {@link ProjectType }
+         */
+        public List<ProjectType> getProjectType() {
+            if (projectType == null) {
+                projectType = new ArrayList<ProjectType>();
+            }
+            return this.projectType;
+        }
+
+    }
+
+
+    /**
+     * <p>Java class for anonymous complex type.
+     *
+     * <p>The following schema fragment specifies the expected content contained within this class.
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -187,12 +258,10 @@ public class Payload {
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "user"
+            "user"
     })
     public static class Users {
 
@@ -201,25 +270,23 @@ public class Payload {
 
         /**
          * Gets the value of the user property.
-         * 
+         *
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the user property.
-         * 
+         *
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getUser().add(newItem);
          * </pre>
-         * 
-         * 
+         *
+         *
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link User }
-         * 
-         * 
          */
         public List<User> getUser() {
             if (user == null) {
