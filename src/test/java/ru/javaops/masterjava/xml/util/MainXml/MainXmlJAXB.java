@@ -9,34 +9,42 @@ import ru.javaops.masterjava.xml.util.Schemas;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainXmlJAXB {
     JaxbParser parser;
     Payload payload;
+    Map<String, List<User>> projectsStorage;
     String project;
 
     public MainXmlJAXB(String project) throws IOException, JAXBException {
         this.parser = new JaxbParser(ObjectFactory.class);
         parser.setSchema(Schemas.ofClasspath("payload.xsd"));
         payload = parser.unmarshal(Resources.getResource("payload.xml").openStream());
+        this.projectsStorage = new HashMap<>();
         this.project = project;
     }
 
     public List<User> getSortedUserWithProject() {
-        List<User> users = new ArrayList<>();
-        payload.getUsers().getUser().forEach(u -> {
-            u.getProjects().getProject().forEach(p -> {
-                if (p.getProjectType().getId().equals(project)) {
-                    users.add(u);
-                }
-            });
-        });
-        return users.stream()
+        payload.getUsers().getUser().forEach(this::fillingProjectsStorage);
+        return projectsStorage.containsKey(project) ? projectsStorage.get(project).stream()
                 .sorted(Comparator.comparing(User::getFullName))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()) : Collections.emptyList();
+    }
+
+    private void fillingProjectsStorage(User user) {
+        user.getProjects().getProject().forEach(p -> {
+            String projectName = p.getProjectType().getId();
+            projectsStorage.computeIfAbsent(projectName, b -> saveInProjectStoraje(new ArrayList<>(), user));
+            projectsStorage.computeIfPresent(projectName, (k, v) -> saveInProjectStoraje(v, user));
+        });
+    }
+
+    private List<User> saveInProjectStoraje(List<User> users, User user) {
+        if (!users.contains(user)) {
+            users.add(user);
+        }
+        return users;
     }
 }

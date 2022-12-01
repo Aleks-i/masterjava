@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class MainXml {
     public static void main(String[] args) throws JAXBException, IOException {
-        MainXmlJAXB JAXBXml = new MainXmlJAXB("masterjava");
+        MainXmlJAXB JAXBXml = new MainXmlJAXB("topjava");
         JAXBXml.getSortedUserWithProject().forEach(System.out::println);
     }
 }
