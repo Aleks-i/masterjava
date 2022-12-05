@@ -36,12 +36,12 @@ public class MainXmlJAXB {
     private void fillingProjectsStorage(User user) {
         user.getProjects().getProject().forEach(p -> {
             String projectName = p.getProjectType().getId();
-            projectsStorage.computeIfAbsent(projectName, b -> saveInProjectStoraje(new ArrayList<>(), user));
-            projectsStorage.computeIfPresent(projectName, (k, v) -> saveInProjectStoraje(v, user));
+            projectsStorage.computeIfAbsent(projectName, v -> saveInProjectStorage(new ArrayList<>(), user));
+            projectsStorage.computeIfPresent(projectName, (k, v) -> saveInProjectStorage(v, user));
         });
     }
 
-    private List<User> saveInProjectStoraje(List<User> users, User user) {
+    private List<User> saveInProjectStorage(List<User> users, User user) {
         if (!users.contains(user)) {
             users.add(user);
         }

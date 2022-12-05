@@ -2,22 +2,101 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://javaops.ru payload.xsd">
     <Users>
-        <User flag="active" city="kiv">
-            <email>gmail@gmail.com</email>
+        <User flag="active" city="kiv" email="gmail@gmail.com">
             <fullName>Full Name</fullName>
+            <Projects>
+                <Project projectType="topjava">
+                    <Groups>
+                        <Group groupType="finished">topjava1</Group>
+                        <Group groupType="current">topjava2</Group>
+                    </Groups>
+                </Project>
+                <Project projectType="basejava">
+                    <Groups>
+                        <Group groupType="finished">basejava1</Group>
+                        <Group groupType="registering">basejava2</Group>
+                    </Groups>
+                </Project>
+            </Projects>
         </User>
-        <User flag="superuser" city="spb">
-            <email>admin@javaops.ru</email>
+
+        <User flag="active" city="kiv" email="gmail1@gmail.com">
+            <fullName>Full Name</fullName>
+            <Projects>
+                <Project projectType="basejava">
+                    <Groups>
+                        <Group groupType="finished">basejava1</Group>
+                        <Group groupType="registering">basejava2</Group>
+                    </Groups>
+                </Project>
+                <Project projectType="topjava">
+                    <Groups>
+                        <Group groupType="finished">topjava1</Group>
+                        <Group groupType="registering">topjava2</Group>
+                    </Groups>
+                </Project>
+            </Projects>
+        </User>
+
+        <User flag="superuser" city="spb" email="admin@javaops.ru">
             <fullName>Admin</fullName>
+            <Projects>
+                <Project projectType="topjava">
+                    <Groups>
+                        <Group groupType="current">topjava1</Group>
+                        <Group groupType="registering">topjava2</Group>
+                    </Groups>
+                </Project>
+            </Projects>
         </User>
-        <User flag="deleted" city="spb">
-            <email>mail@yandex.ru</email>
+
+        <User flag="deleted" city="spb" email="mail@yandex.ru">
             <fullName>Deleted</fullName>
+            <Projects>
+                <Project projectType="masterjava">
+                    <Groups>
+                        <Group groupType="finished">masterjava1</Group>
+                        <Group groupType="current">masterjava2</Group>
+                    </Groups>
+                </Project>
+                <Project projectType="topjava">
+                    <Groups>
+                        <Group groupType="current">topjava3</Group>
+                    </Groups>
+                </Project>
+            </Projects>
+        </User>
+
+        <User flag="active" city="kiv" email="lj@lkn.ru">
+            <fullName>Dvwer</fullName>
+            <Projects>
+                <Project projectType="basejava">
+                    <Groups>
+                        <Group groupType="current">basejava1</Group>
+                        <Group groupType="registering">basejava2</Group>
+                    </Groups>
+                </Project>
+                <Project projectType="startjava">
+                    <Groups>
+                        <Group groupType="finished">startjava1</Group>
+                        <Group groupType="finished">startjava2</Group>
+                        <Group groupType="current">startjava3</Group>
+                    </Groups>
+                </Project>
+            </Projects>
         </User>
     </Users>
+
     <Cities>
         <City id="spb">Санкт-Петербург</City>
         <City id="kiv">Киев</City>
         <City id="mnsk">Минск</City>
     </Cities>
+
+    <ProjectTypes>
+        <ProjectType id="topjava">top java description</ProjectType>
+        <ProjectType id="masterjava">master java description</ProjectType>
+        <ProjectType id="startjava">start java description</ProjectType>
+        <ProjectType id="basejava">base java description</ProjectType>
+    </ProjectTypes>
 </Payload>
