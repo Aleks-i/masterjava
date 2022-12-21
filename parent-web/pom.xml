@@ -16,12 +16,18 @@
     <packaging>pom</packaging>
     <name>Parent-Web</name>
 
+    <properties>
+        <spring-webmvc.version>5.3.24</spring-webmvc.version>
+        <maven-war-plugin.version>3.2.0</maven-war-plugin.version>
+        <javax-servlet-api-version>3.1.0</javax-servlet-api-version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
@@ -30,6 +36,18 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax-servlet-api-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring-webmvc.version}</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
