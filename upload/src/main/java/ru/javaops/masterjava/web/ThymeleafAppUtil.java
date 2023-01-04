@@ -4,7 +4,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 public class ThymeleafAppUtil {
-    private static TemplateEngine templateEngine;
+    private static final TemplateEngine templateEngine;
 
     static {
         ServletContextTemplateResolver templateResolver =

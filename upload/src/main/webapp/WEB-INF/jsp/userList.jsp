@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>User List</title>
+    <link th:href="@{/resources/css/table.css}" rel="stylesheet" />
 </head>
 <body>
 
