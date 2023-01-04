@@ -10,21 +10,30 @@ import java.io.Reader;
 import java.io.StringReader;
 
 public class JaxbUnmarshaller {
-    private Unmarshaller unmarshaller;
+    private final Unmarshaller unmarshaller;
 
     public JaxbUnmarshaller(JAXBContext ctx) throws JAXBException {
-        unmarshaller = ctx.createUnmarshaller();
+        ThreadLocal<Unmarshaller> unmarshallerThreadLocal = new ThreadLocal<Unmarshaller>() {
+            protected synchronized Unmarshaller initialValue() {
+                try {
+                    return ctx.createUnmarshaller();
+                } catch (JAXBException e) {
+                    throw new IllegalStateException("Unable to create unmarshaller");
+                }
+            }
+        };
+        this.unmarshaller = unmarshallerThreadLocal.get();
     }
 
-    public synchronized void setSchema(Schema schema) {
+    public void setSchema(Schema schema) {
         unmarshaller.setSchema(schema);
     }
 
-    public synchronized Object unmarshal(InputStream is) throws JAXBException {
+    public Object unmarshal(InputStream is) throws JAXBException {
         return unmarshaller.unmarshal(is);
     }
 
-    public synchronized Object unmarshal(Reader reader) throws JAXBException {
+    public Object unmarshal(Reader reader) throws JAXBException {
         return unmarshaller.unmarshal(reader);
     }
 
@@ -32,7 +41,7 @@ public class JaxbUnmarshaller {
         return unmarshal(new StringReader(str));
     }
 
-    public synchronized <T> T unmarshal(XMLStreamReader reader, Class<T> elementClass) throws JAXBException {
+    public <T> T unmarshal(XMLStreamReader reader, Class<T> elementClass) throws JAXBException {
         return unmarshaller.unmarshal(reader, elementClass).getValue();
     }
 }

@@ -2,9 +2,7 @@ package ru.javaops.masterjava.xml.util;
 
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.PropertyException;
+import javax.xml.bind.*;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -17,13 +15,16 @@ import java.io.*;
  */
 public class JaxbParser {
 
+    private final JAXBContext ctx;
+
     protected JaxbMarshaller jaxbMarshaller;
     protected JaxbUnmarshaller jaxbUnmarshaller;
     protected Schema schema;
 
     public JaxbParser(Class... classesToBeBound) {
         try {
-            init(JAXBContext.newInstance(classesToBeBound));
+            ctx = JAXBContext.newInstance(classesToBeBound);
+            init();
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
@@ -32,13 +33,14 @@ public class JaxbParser {
     //    http://stackoverflow.com/questions/30643802/what-is-jaxbcontext-newinstancestring-contextpath
     public JaxbParser(String context) {
         try {
-            init(JAXBContext.newInstance(context));
+            ctx = JAXBContext.newInstance(context);
+            init();
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    private void init(JAXBContext ctx) throws JAXBException {
+    private void init() throws JAXBException {
         jaxbMarshaller = new JaxbMarshaller(ctx);
         jaxbUnmarshaller = new JaxbUnmarshaller(ctx);
     }

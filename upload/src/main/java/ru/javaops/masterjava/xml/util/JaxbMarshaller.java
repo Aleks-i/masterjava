@@ -9,20 +9,30 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 public class JaxbMarshaller {
-    private Marshaller marshaller;
+    private final Marshaller marshaller;
 
     public JaxbMarshaller(JAXBContext ctx) throws JAXBException {
-        marshaller = ctx.createMarshaller();
+        ThreadLocal<Marshaller> marshallerThreadLocal = new ThreadLocal<Marshaller>() {
+            protected synchronized Marshaller initialValue() {
+                try {
+                    return ctx.createMarshaller();
+                } catch (JAXBException e) {
+                    throw new IllegalStateException("Unable to create marshaller");
+                }
+            }
+        };
+        marshaller = marshallerThreadLocal.get();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+
     }
 
     public void setProperty(String prop, Object value) throws PropertyException {
         marshaller.setProperty(prop, value);
     }
 
-    public synchronized void setSchema(Schema schema) {
+    public void setSchema(Schema schema) {
         marshaller.setSchema(schema);
     }
 
@@ -32,7 +42,7 @@ public class JaxbMarshaller {
         return sw.toString();
     }
 
-    public synchronized void marshal(Object instance, Writer writer) throws JAXBException {
+    public void marshal(Object instance, Writer writer) throws JAXBException {
         marshaller.marshal(instance, writer);
     }
 
