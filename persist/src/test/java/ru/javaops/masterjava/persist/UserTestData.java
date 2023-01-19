@@ -14,6 +14,7 @@ public class UserTestData {
     public static User USER1;
     public static User USER2;
     public static User USER3;
+    public static User USER3_DUPLICATE_EMAIL;
     public static List<User> FIST5_USERS;
 
     public static void init() {
@@ -23,6 +24,7 @@ public class UserTestData {
         USER1 = new User("User1", "user1@gmail.com", UserFlag.active);
         USER2 = new User("User2", "user2@yandex.ru", UserFlag.active);
         USER3 = new User("User3", "user3@yandex.ru", UserFlag.active);
+        USER3_DUPLICATE_EMAIL = new User("User3Dupl", "user3@yandex.ru", UserFlag.active);
         FIST5_USERS = ImmutableList.of(ADMIN, DELETED, FULL_NAME, USER1, USER2);
     }
 
@@ -32,6 +34,8 @@ public class UserTestData {
         DBIProvider.getDBI().useTransaction((conn, status) -> {
             FIST5_USERS.forEach(dao::insert);
             dao.insert(USER3);
+            dao.insert(USER3_DUPLICATE_EMAIL);
+            dao.insertBatchChunkSize(FIST5_USERS, 2);
         });
     }
 }

@@ -62,9 +62,8 @@ public class UploadServlet extends HttpServlet {
                 List<User> users = userProcessor.process(is);
 
                 dao.insertBatchChunkSize(users, batchChunkSize);
-//                users.forEach(u -> dao.insert(u));
 
-                webContext.setVariable("users", users);
+                webContext.setVariable("users", dao.getWithLimit(20));
                 engine.process("result", webContext, resp.getWriter());
             }
         } catch (Exception e) {
