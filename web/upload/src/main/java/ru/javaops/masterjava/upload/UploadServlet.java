@@ -25,21 +25,7 @@ public class UploadServlet extends HttpServlet {
 
     private final UserProcessor userProcessor = new UserProcessor();
 
-    protected UserDao dao;
-
-    @Override
-    public void init() throws ServletException {
-        DBIProvider.init(() -> {
-            try {
-                Class.forName("org.postgresql.Driver");
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException("PostgreSQL driver not found", e);
-            }
-            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/masterjava",
-                    "user", "password");
-        });
-        dao = DBIProvider.getDao(UserDao.class);
-    }
+    protected UserDao dao = DBIProvider.getDao(UserDao.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
