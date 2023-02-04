@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import ru.javaops.masterjava.persist.DBIProvider;
+import ru.javaops.masterjava.persist.dao.CityDao;
 import ru.javaops.masterjava.persist.dao.UserDao;
+import ru.javaops.masterjava.persist.model.City;
 import ru.javaops.masterjava.persist.model.User;
 import ru.javaops.masterjava.persist.model.UserFlag;
 import ru.javaops.masterjava.xml.schema.ObjectFactory;
@@ -25,11 +27,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @Slf4j
-public class UserProcessor {
+public class PayLoadProcessor {
     private static final int NUMBER_THREADS = 4;
 
     private static final JaxbParser jaxbParser = new JaxbParser(ObjectFactory.class);
     private static UserDao userDao = DBIProvider.getDao(UserDao.class);
+    private static CityDao cityDao = DBIProvider.getDao(CityDao.class);
 
     private ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
 
@@ -57,14 +60,25 @@ public class UserProcessor {
         val processor = new StaxStreamProcessor(is);
         val unmarshaller = jaxbParser.createUnmarshaller();
 
-        while (processor.doUntil(XMLEvent.START_ELEMENT, "User")) {
-            ru.javaops.masterjava.xml.schema.User xmlUser = unmarshaller.unmarshal(processor.getReader(), ru.javaops.masterjava.xml.schema.User.class);
-            final User user = new User(id++, xmlUser.getValue(), xmlUser.getEmail(), UserFlag.valueOf(xmlUser.getFlag().value()));
-            chunk.add(user);
-            if (chunk.size() == chunkSize) {
-                addChunkFutures(chunkFutures, chunk);
-                chunk = new ArrayList<>(chunkSize);
-                id = userDao.getSeqAndSkip(chunkSize);
+        while (processor.getReader().hasNext()) {
+            int event = processor.getReader().next();
+            if (processor.checkElement(XMLEvent.START_ELEMENT, "City", event)) {
+                ru.javaops.masterjava.xml.schema.CityType xmlCity = unmarshaller.unmarshal(processor.getReader(), ru.javaops.masterjava.xml.schema.CityType.class);
+                String city_id = xmlCity.getId();
+                final City city = new City(city_id, xmlCity.getValue());
+                cityDao.insert(city);
+                continue;
+            }
+            if (processor.checkElement(XMLEvent.START_ELEMENT, "User", event)) {
+                String city_id = processor.getAttribute("city");
+                ru.javaops.masterjava.xml.schema.User xmlUser = unmarshaller.unmarshal(processor.getReader(), ru.javaops.masterjava.xml.schema.User.class);
+                final User user = new User(id++, xmlUser.getValue(), xmlUser.getEmail(), UserFlag.valueOf(xmlUser.getFlag().value()), city_id);
+                chunk.add(user);
+                if (chunk.size() == chunkSize) {
+                    addChunkFutures(chunkFutures, chunk);
+                    chunk = new ArrayList<>(chunkSize);
+                    id = userDao.getSeqAndSkip(chunkSize);
+                }
             }
         }
 
