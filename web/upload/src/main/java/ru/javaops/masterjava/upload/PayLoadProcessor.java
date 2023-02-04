@@ -17,10 +17,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,12 +57,15 @@ public class PayLoadProcessor {
         val processor = new StaxStreamProcessor(is);
         val unmarshaller = jaxbParser.createUnmarshaller();
 
+        Map<String, City> cityMap = new HashMap<>();
+        List<String> cityMissingInDB = new ArrayList<>();
         while (processor.getReader().hasNext()) {
             int event = processor.getReader().next();
             if (processor.checkElement(XMLEvent.START_ELEMENT, "City", event)) {
                 ru.javaops.masterjava.xml.schema.CityType xmlCity = unmarshaller.unmarshal(processor.getReader(), ru.javaops.masterjava.xml.schema.CityType.class);
                 String city_id = xmlCity.getId();
                 final City city = new City(city_id, xmlCity.getValue());
+                cityMap.put(city_id, city);
                 cityDao.insert(city);
                 continue;
             }
@@ -78,6 +78,9 @@ public class PayLoadProcessor {
                     addChunkFutures(chunkFutures, chunk);
                     chunk = new ArrayList<>(chunkSize);
                     id = userDao.getSeqAndSkip(chunkSize);
+                }
+                if (!cityMap.containsKey(city_id)) {
+                    cityMissingInDB.add(user.getEmail());
                 }
             }
         }
@@ -100,6 +103,9 @@ public class PayLoadProcessor {
         });
         if (!allAlreadyPresents.isEmpty()) {
             failed.add(new FailedEmails(allAlreadyPresents.toString(), "already presents"));
+        }
+        if (!cityMissingInDB.isEmpty()) {
+            failed.add(new FailedEmails(cityMissingInDB.toString(), "city for users missing in DB"));
         }
         return failed;
     }
