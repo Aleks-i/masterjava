@@ -5,13 +5,14 @@ import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
-import ru.javaops.masterjava.persist.DBIProvider;
-import ru.javaops.masterjava.persist.DBITestProvider;
+import ru.javaops.masterjava.dbi.dao.AbstractDao;
+import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
+import ru.javaops.masterjava.dbi.provider.DBIProvider;
 
 @Slf4j
 public abstract class AbstractDaoTest<DAO extends AbstractDao> {
     static {
-        DBITestProvider.initDBI();
+        DBIProvider.initDBI();
     }
 
     @Rule
@@ -30,6 +31,6 @@ public abstract class AbstractDaoTest<DAO extends AbstractDao> {
     protected DAO dao;
 
     protected AbstractDaoTest(Class<DAO> daoClass) {
-        this.dao = DBIProvider.getDao(daoClass);
+        this.dao = DBIPersistProvider.getDao(daoClass);
     }
 }

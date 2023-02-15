@@ -2,7 +2,7 @@ package ru.javaops.masterjava.upload;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import ru.javaops.masterjava.persist.DBIProvider;
+import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
 import ru.javaops.masterjava.persist.dao.UserDao;
 import ru.javaops.masterjava.persist.model.City;
 import ru.javaops.masterjava.persist.model.User;
@@ -29,7 +29,7 @@ public class UserProcessor {
     private static final int NUMBER_THREADS = 4;
 
     private static final JaxbParser jaxbParser = new JaxbParser(ObjectFactory.class);
-    private static UserDao userDao = DBIProvider.getDao(UserDao.class);
+    private static UserDao userDao = DBIPersistProvider.getDao(UserDao.class);
 
     private ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
 

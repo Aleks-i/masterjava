@@ -1,18 +1,18 @@
-package ru.javaops.masterjava.persist;
+package ru.javaops.masterjava.dbi.provider;
 
 import com.typesafe.config.Config;
 import ru.javaops.masterjava.config.Configs;
 
 import java.sql.DriverManager;
 
-public class DBITestProvider {
+public class DBIProvider {
     public static void initDBI() {
-        Config db = Configs.getConfig("persist.conf","db");
+        Config db = Configs.getConfig("persist.conf", "db");
         initDBI(db.getString("url"), db.getString("user"), db.getString("password"));
     }
 
     public static void initDBI(String dbUrl, String dbUser, String dbPassword) {
-        DBIProvider.init(() -> {
+        DBIPersistProvider.init(() -> {
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (ClassNotFoundException e) {

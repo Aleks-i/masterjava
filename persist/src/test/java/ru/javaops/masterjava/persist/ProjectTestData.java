@@ -1,6 +1,7 @@
 package ru.javaops.masterjava.persist;
 
 import com.google.common.collect.ImmutableMap;
+import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
 import ru.javaops.masterjava.persist.dao.ProjectDao;
 import ru.javaops.masterjava.persist.model.Project;
 
@@ -23,9 +24,9 @@ public class ProjectTestData {
     }
 
     public static void setUp() {
-        ProjectDao dao = DBIProvider.getDao(ProjectDao.class);
+        ProjectDao dao = DBIPersistProvider.getDao(ProjectDao.class);
         dao.clean();
-        DBIProvider.getDBI().useTransaction((conn, status) -> {
+        DBIPersistProvider.getDBI().useTransaction((conn, status) -> {
             PROJECTS.values().forEach(dao::insert);
         });
         TOPJAVA_ID = TOPJAVA.getId();

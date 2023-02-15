@@ -7,6 +7,7 @@ import org.skife.jdbi.v2.sqlobject.SqlBatch;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapperFactory;
+import ru.javaops.masterjava.dbi.dao.AbstractDao;
 import ru.javaops.masterjava.persist.model.City;
 
 import java.util.Collection;

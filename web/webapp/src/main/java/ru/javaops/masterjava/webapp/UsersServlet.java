@@ -2,7 +2,7 @@ package ru.javaops.masterjava.webapp;
 
 import com.google.common.collect.ImmutableMap;
 import org.thymeleaf.context.WebContext;
-import ru.javaops.masterjava.persist.DBIProvider;
+import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
 import ru.javaops.masterjava.persist.dao.UserDao;
 
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ import static ru.javaops.masterjava.common.web.ThymeleafListener.engine;
 
 @WebServlet("")
 public class UsersServlet extends HttpServlet {
-    private UserDao userDao = DBIProvider.getDao(UserDao.class);
+    private UserDao userDao = DBIPersistProvider.getDao(UserDao.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

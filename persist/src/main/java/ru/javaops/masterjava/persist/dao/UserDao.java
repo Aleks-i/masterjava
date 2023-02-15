@@ -5,7 +5,8 @@ import one.util.streamex.IntStreamEx;
 import org.skife.jdbi.v2.sqlobject.*;
 import org.skife.jdbi.v2.sqlobject.customizers.BatchChunkSize;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapperFactory;
-import ru.javaops.masterjava.persist.DBIProvider;
+import ru.javaops.masterjava.dbi.dao.AbstractDao;
+import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
 import ru.javaops.masterjava.persist.model.User;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public abstract class UserDao implements AbstractDao {
     @Transaction
     public int getSeqAndSkip(int step) {
         int id = getNextVal();
-        DBIProvider.getDBI().useHandle(h -> h.execute("SELECT setval('user_seq', " + (id + step - 1) + ")"));
+        DBIPersistProvider.getDBI().useHandle(h -> h.execute("SELECT setval('user_seq', " + (id + step - 1) + ")"));
         return id;
     }
 

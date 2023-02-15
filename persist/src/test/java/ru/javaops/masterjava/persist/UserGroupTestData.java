@@ -1,5 +1,6 @@
 package ru.javaops.masterjava.persist;
 
+import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
 import ru.javaops.masterjava.persist.dao.UserGroupDao;
 import ru.javaops.masterjava.persist.model.UserGroup;
 
@@ -28,9 +29,9 @@ public class UserGroupTestData {
     }
 
     public static void setUp() {
-        UserGroupDao dao = DBIProvider.getDao(UserGroupDao.class);
+        UserGroupDao dao = DBIPersistProvider.getDao(UserGroupDao.class);
         dao.clean();
-        DBIProvider.getDBI().useTransaction((conn, status) -> {
+        DBIPersistProvider.getDBI().useTransaction((conn, status) -> {
             dao.insertBatch(USER_GROUPS);
         });
     }

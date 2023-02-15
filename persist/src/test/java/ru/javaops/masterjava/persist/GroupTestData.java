@@ -1,6 +1,7 @@
 package ru.javaops.masterjava.persist;
 
 import com.google.common.collect.ImmutableMap;
+import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
 import ru.javaops.masterjava.persist.dao.GroupDao;
 import ru.javaops.masterjava.persist.model.Group;
 
@@ -40,9 +41,9 @@ public class GroupTestData {
     }
 
     public static void setUp() {
-        GroupDao dao = DBIProvider.getDao(GroupDao.class);
+        GroupDao dao = DBIPersistProvider.getDao(GroupDao.class);
         dao.clean();
-        DBIProvider.getDBI().useTransaction((conn, status) -> {
+        DBIPersistProvider.getDBI().useTransaction((conn, status) -> {
             GROUPS.values().forEach(dao::insert);
         });
         TOPJAVA_06_ID = TOPJAVA_06.getId();

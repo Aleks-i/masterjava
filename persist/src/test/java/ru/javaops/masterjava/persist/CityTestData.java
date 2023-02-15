@@ -1,6 +1,7 @@
 package ru.javaops.masterjava.persist;
 
 import com.google.common.collect.ImmutableMap;
+import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
 import ru.javaops.masterjava.persist.dao.CityDao;
 import ru.javaops.masterjava.persist.model.City;
 
@@ -27,9 +28,9 @@ public class CityTestData {
     }
 
     public static void setUp() {
-        CityDao dao = DBIProvider.getDao(CityDao.class);
+        CityDao dao = DBIPersistProvider.getDao(CityDao.class);
         dao.clean();
-        DBIProvider.getDBI().useTransaction((conn, status) -> {
+        DBIPersistProvider.getDBI().useTransaction((conn, status) -> {
             CITIES.values().forEach(dao::insert);
         });
     }

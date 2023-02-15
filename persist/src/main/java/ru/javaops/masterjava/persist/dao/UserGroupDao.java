@@ -4,6 +4,7 @@ import com.bertoncelj.jdbi.entitymapper.EntityMapperFactory;
 import one.util.streamex.StreamEx;
 import org.skife.jdbi.v2.sqlobject.*;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapperFactory;
+import ru.javaops.masterjava.dbi.dao.AbstractDao;
 import ru.javaops.masterjava.persist.model.UserGroup;
 
 import java.util.List;

@@ -32,3 +32,17 @@ CREATE TABLE user_group (
   group_id INTEGER NOT NULL REFERENCES groups (id),
   CONSTRAINT users_group_idx UNIQUE (user_id, group_id)
 );
+
+--changeset alex.i:1
+CREATE TABLE mail_sender_status (
+    id          INTEGER PRIMARY KEY DEFAULT nextval('common_seq'),
+    email_frome TEXT UNIQUE NOT NULL ,
+    email_to    TEXT NOT NULL,
+    cause       TEXT NOT NULL
+);
+
+--changeset alex.i:2
+ALTER TABLE mail_sender_status RENAME COLUMN email_frome TO email_from;
+
+--changeset alex.i:3
+ALTER TABLE mail_sender_status DROP CONSTRAINT mail_sender_status_email_frome_key;

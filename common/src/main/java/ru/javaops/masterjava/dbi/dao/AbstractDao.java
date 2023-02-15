@@ -1,4 +1,4 @@
-package ru.javaops.masterjava.persist.dao;
+package ru.javaops.masterjava.dbi.dao;
 
 public interface AbstractDao {
     void clean();

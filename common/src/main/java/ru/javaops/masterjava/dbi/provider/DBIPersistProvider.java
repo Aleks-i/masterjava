@@ -1,16 +1,16 @@
-package ru.javaops.masterjava.persist;
+package ru.javaops.masterjava.dbi.provider;
 
 import lombok.extern.slf4j.Slf4j;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.logging.SLF4JLog;
 import org.skife.jdbi.v2.tweak.ConnectionFactory;
-import ru.javaops.masterjava.persist.dao.AbstractDao;
+import ru.javaops.masterjava.dbi.dao.AbstractDao;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 @Slf4j
-public class DBIProvider {
+public class DBIPersistProvider {
 
     private volatile static ConnectionFactory connectionFactory = null;
 
@@ -37,7 +37,7 @@ public class DBIProvider {
     }
 
     public static void init(ConnectionFactory connectionFactory) {
-        DBIProvider.connectionFactory = connectionFactory;
+        DBIPersistProvider.connectionFactory = connectionFactory;
     }
 
     public static DBI getDBI() {
