@@ -31,8 +31,8 @@ public abstract class GroupDao implements AbstractDao {
     @GetGeneratedKeys
     public abstract int insertGeneratedId(@BindBean Group groups);
 
-    public void insert(Group groups) {
-        int id = insertGeneratedId(groups);
-        groups.setId(id);
+    public void insert(Group group) {
+        int id = insertGeneratedId(group);
+        group.setId(id);
     }
 }

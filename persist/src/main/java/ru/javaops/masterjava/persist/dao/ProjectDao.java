@@ -31,8 +31,9 @@ public abstract class ProjectDao implements AbstractDao {
     @GetGeneratedKeys
     public abstract int insertGeneratedId(@BindBean Project project);
 
-    public void insert(Project project) {
+    public int insert(Project project) {
         int id = insertGeneratedId(project);
         project.setId(id);
+        return id;
     }
 }

@@ -3,8 +3,10 @@ package ru.javaops.masterjava.upload;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import ru.javaops.masterjava.dbi.provider.DBIPersistProvider;
+import ru.javaops.masterjava.persist.dao.GroupDao;
 import ru.javaops.masterjava.persist.dao.UserDao;
 import ru.javaops.masterjava.persist.model.City;
+import ru.javaops.masterjava.persist.model.Group;
 import ru.javaops.masterjava.persist.model.User;
 import ru.javaops.masterjava.persist.model.type.UserFlag;
 import ru.javaops.masterjava.upload.PayloadProcessor.FailedEmails;
@@ -15,10 +17,7 @@ import ru.javaops.masterjava.xml.util.StaxStreamProcessor;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,14 +28,15 @@ public class UserProcessor {
     private static final int NUMBER_THREADS = 4;
 
     private static final JaxbParser jaxbParser = new JaxbParser(ObjectFactory.class);
-    private static UserDao userDao = DBIPersistProvider.getDao(UserDao.class);
+    private static final UserDao userDao = DBIPersistProvider.getDao(UserDao.class);
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
 
     /*
      * return failed users chunks
      */
-    public List<FailedEmails> process(final StaxStreamProcessor processor, Map<String, City> cities, int chunkSize) throws XMLStreamException, JAXBException {
+    public List<FailedEmails> process(final StaxStreamProcessor processor, Map<String, City> cities,
+                                      Map<String, Group> groups, int chunkSize) throws XMLStreamException, JAXBException {
         log.info("Start processing with chunkSize=" + chunkSize);
 
         Map<String, Future<List<String>>> chunkFutures = new LinkedHashMap<>();  // ordered map (emailRange -> chunk future)
@@ -48,9 +48,21 @@ public class UserProcessor {
 
         while (processor.doUntil(XMLEvent.START_ELEMENT, "User")) {
             String cityRef = processor.getAttribute("city");  // unmarshal doesn't get city ref
+
+            String groupRefs = processor.getAttribute("groupRefs");
+            Set<String> userGroups = Collections.emptySet();
+            if (groupRefs != null) {
+                userGroups = new HashSet<>(Arrays.asList(processor.getAttribute("groupRefs").split(" ")));
+            }
+            List<String> missingUserGroups = getMissingUserGroups(groups, userGroups);
+
             ru.javaops.masterjava.xml.schema.User xmlUser = unmarshaller.unmarshal(processor.getReader(), ru.javaops.masterjava.xml.schema.User.class);
             if (cities.get(cityRef) == null) {
                 failed.add(new FailedEmails(xmlUser.getEmail(), "City '" + cityRef + "' is not present in DB"));
+            } else if (!missingUserGroups.isEmpty()) {
+                missingUserGroups.forEach(g -> {
+                    failed.add(new FailedEmails(xmlUser.getEmail(), "Group '" + g + "' is not present in DB"));
+                });
             } else {
                 final User user = new User(id++, xmlUser.getValue(), xmlUser.getEmail(), UserFlag.valueOf(xmlUser.getFlag().value()), cityRef);
                 chunk.add(user);
@@ -81,6 +93,16 @@ public class UserProcessor {
             failed.add(new FailedEmails(allAlreadyPresents.toString(), "already presents"));
         }
         return failed;
+    }
+
+    private List<String> getMissingUserGroups(Map<String, Group> groups, Set<String> userGroups) {
+        List<String> missingUserGroups = new ArrayList<>();
+        userGroups.forEach(g -> {
+            if (!groups.containsKey(g)) {
+                missingUserGroups.add(g);
+            }
+        });
+        return missingUserGroups;
     }
 
     private void addChunkFutures(Map<String, Future<List<String>>> chunkFutures, List<User> chunk) {
